@@ -1,4 +1,4 @@
-# ☁️ AWS EC2 Complete Guide & Interview Preparation 🚀
+# Day 3 - AWS EC2 Complete Guide & Interview Preparation 🚀
 
 > Your comprehensive handbook for Amazon Elastic Compute Cloud (EC2) - from basics to cracking DevOps interviews! 🎯
 
