@@ -179,3 +179,11 @@ This day focuses on learning how to migrate applications to AWS cloud. What are 
 ## Day 29: AWS Best Practices and Job Preparation
 
 On the final day, you'll review best practices for AWS services, including security, cost optimization and performance.
+
+---
+
+*Last Updated: 2024*  
+*Author: SalvatoreOps*  
+*License: Public Domain / Free to share*
+
+---
