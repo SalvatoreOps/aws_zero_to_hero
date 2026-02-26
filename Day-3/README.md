@@ -443,6 +443,8 @@ Traditional Key Pairs require file management and long-term key security.
 
 ---
 
-*Remember: Hands-on practice is key. Use AWS Free Tier to experiment!* 🚀
+*Last Updated: 2024*  
+*Author: SalvatoreOps*  
+*License: Public Domain / Free to share*
 
 ---

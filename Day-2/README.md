@@ -207,4 +207,11 @@ IAM works with virtually every AWS service:
 IAM is not optional in AWS - it is the security backbone. Proper IAM configuration prevents data breaches, accidental infrastructure destruction, and compliance violations. Start restrictive, use roles over users when possible, enable MFA everywhere, and audit regularly.
 
 For detailed policy syntax and advanced features like Permission Boundaries or IAM Conditions, refer to the official AWS IAM documentation.
-```
+
+---
+
+*Last Updated: 2024*  
+*Author: SalvatoreOps*  
+*License: Public Domain / Free to share*
+
+---
