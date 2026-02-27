@@ -259,187 +259,33 @@ Step-by-step visual guide from AWS engineers covering the entire launch process,
 
 ---
 
-## ❓ Interview Questions & Answers
+## Summary
 
-### 🔵 Beginner Level
+**What:** Virtual servers (VMs) in AWS cloud - scalable, on-demand compute.
 
-**Q1: What is EC2 and why is it called "Elastic"?**
-**A:** EC2 is AWS's IaaS offering providing virtual machines. It's "Elastic" because it allows automatic scaling (up/down) based on demand, and you only pay for capacity used. You can increase/decrease resources (CPU, RAM) dynamically without hardware procurement delays.
+**🔑 Key Components:**
+- **AMI**: OS template (Linux/Windows)
+- **Instance Types**: T/M (general), C (compute), R (memory), G (GPU)
+- **Storage**: EBS (persistent) vs Instance Store (temporary)
+- **Security Groups**: Firewall rules (ports 22/80/443)
+- **Key Pairs**: SSH access credentials
 
-**Q2: What's the difference between Security Groups and NACLs?**
-**A:**
-| Feature | Security Group | NACL |
-|---------|---------------|------|
-| Level | Instance level | Subnet level |
-| State | Stateful (auto return) | Stateless (need explicit rules) |
-| Rules | Allow only | Allow and Deny |
-| Evaluation | All rules evaluated | Rules evaluated in order (number) |
+**🚀 Launch in 5 Steps:**
+1. Select AMI + Instance Type (t2.micro for free tier)
+2. Configure network (VPC, public IP, Security Groups)
+3. Add storage (8-30GB gp3)
+4. Select/create Key Pair (.pem file)
+5. Launch & Connect via SSH/RDP
 
-**Q3: How do you secure an EC2 instance?**
-**A:** 
-- Use IAM Roles instead of access keys
-- Restrict Security Groups (least privilege)
-- Enable VPC Flow Logs
-- Use private subnets for DBs/app servers
-- Enable EBS encryption
-- Regular patching and updates
-- Use Systems Manager instead of SSH where possible
+**💰 Pricing:** On-Demand (pay hourly), Reserved (1-3yr savings ~72%), Spot (90% off, interruptible)
 
-**Q4: What happens when you stop vs terminate an EC2?**
-**A:**
-- **Stop**: EBS-backed instance shuts down, EBS persists, public IP changes (unless EIP), no charge for compute (only storage)
-- **Terminate**: Instance deleted permanently, root EBS deleted (if configured), EIPs detached, charges stop
+**⚡ Pro Tips:**
+- Use Security Groups wisely (restrict SSH to your IP)
+- Stop instances when idle to save money
+- Create AMIs/snapshots for backups
+- Use IAM roles, never hardcode credentials
 
-**Q5: Difference between EBS and Instance Store?**
-**A:** EBS is persistent network-attached storage (survives stop/start), while Instance Store is ephemeral physical storage (lost on stop/terminate). Instance Store offers higher IOPS but no durability guarantees.
-
----
-
-### 🟡 Intermediate Level
-
-**Q6: How does EC2 Auto Scaling work?**
-**A:** Auto Scaling maintains application availability by automatically adding/removing EC2 instances based on:
-- **Scaling Policies**: Target tracking, step scaling, simple scaling
-- **CloudWatch Alarms**: Trigger on metrics (CPU > 70%)
-- **Launch Templates**: Define instance configuration
-- **Health Checks**: Replace unhealthy instances
-- **Lifecycle Hooks**: Perform actions during scale events
-
-**Q7: Explain the difference between T2/T3 Unlimited and Standard?**
-**A:** Standard mode instances earn CPU credits when idle and spend them under load. Unlimited mode allows bursting above baseline indefinitely (additional charges apply if average CPU exceeds baseline over 24 hours).
-
-**Q8: What is a Placement Group and types?**
-**A:** Logical grouping of instances within single AZ for low latency:
-- **Cluster**: Instances on same hardware (HPC, low latency)
-- **Spread**: Instances on distinct hardware (critical apps, 7 per AZ limit)
-- **Partition**: Instances in isolated partitions (HDFS, Cassandra)
-
-**Q9: How do you troubleshoot an EC2 that won't boot?**
-**A:**
-1. Check System Logs (Actions → Monitor and troubleshoot → Get system log)
-2. Check Instance Status Checks (System vs Instance status)
-3. Review CloudTrail for configuration changes
-4. Use Rescue Instance: Stop → Detach root vol → Attach to working instance → Fix fstab/grub → Reattach
-5. Enable Serial Console access for debugging
-
-**Q10: What is the difference between Horizontal and Vertical scaling in EC2?**
-**A:**
-- **Vertical**: Increasing instance size (t2.micro → t2.large). Downtime required, limits exist (hardware max).
-- **Horizontal**: Adding more instances (2 → 10 instances). No downtime, preferred for cloud (Auto Scaling), requires load balancer.
-
----
-
-### 🔴 Advanced/Scenario-Based
-
-**Q11: Design a highly available web application using EC2.**
-**A:**
-```
-Internet → Route53 (Geo DNS) 
-    → CloudFront (CDN/Edge)
-    → ALB (Multi-AZ)
-        → ASG spanning 3 AZs
-            - EC2 instances (min 2 per AZ)
-            - Private subnets for app tier
-        → RDS Multi-AZ (backend)
-        - ElastiCache for session state
-Monitoring: CloudWatch → SNS notifications
-Backup: EBS snapshots, AMI automation
-```
-Key points: Multi-AZ deployment, Auto Scaling, Load Balancing, decoupled architecture, data backup strategy.
-
-**Q12: Your EC2 instance is running slow. How do you troubleshoot?**
-**A:**
-1. **CloudWatch Metrics**: Check CPU Utilization, Network In/Out, Disk Ops
-2. **Memory Check**: Install CloudWatch agent (memory not visible by default)
-3. **EBS Volume**: Check I/O credits (gp2 burst balance), consider gp3/io2 if IOPS throttled
-4. **Network**: Check if NAT Gateway/IGW bandwidth limits reached
-5. **Application**: Review logs (/var/log/messages), check for memory leaks (top, free -m)
-6. **CPU Steal**: Check if T2/T3 credits exhausted (high steal time in top)
-7. **Resolution**: Scale vertically (bigger instance) or horizontally (more instances + ALB)
-
-**Q13: How would you migrate a database from on-prem to EC2 with minimal downtime?**
-**A:**
-1. **AWS DMS** (Database Migration Service) setup
-2. Create EC2 instance with appropriate storage (io1/io2 for IOPS)
-3. **Initial Load**: Full dump and restore during maintenance window
-4. **CDC**: Enable ongoing replication using DMS (Change Data Capture)
-5. **Testing**: Verify data integrity with Row Count and checksum validation
-6. **Cutover**: Update DNS/Connection strings during low traffic, stop replication
-7. **Rollback Plan**: Keep on-prem DB running until validation complete
-
-**Q14: Explain EC2 Nitro System.**
-**A:** Nitro is AWS's virtualization platform that offloads virtualization functions to dedicated hardware:
-- **Nitro Hypervisor**: Lightweight, near bare-metal performance
-- **Nitro Cards**: Handle networking, EBS, I/O, security encryption
-- **Nitro Security Chip**: Hardware root of trust
-Benefits: Better performance (network up to 100Gbps), higher resource efficiency, faster instance launch times, supports bare metal (Nitro Enclaves).
-
-**Q15: How do you automate patching across 1000+ EC2 instances?**
-**A:**
-1. **AWS Systems Manager Patch Manager**: Define patch baselines
-2. **Maintenance Windows**: Schedule non-disruptive times
-3. **Automation Documents (SSM)**: Pre-approved patches
-4. **Target Groups**: Tag-based grouping (Environment:Production)
-5. **Approval Workflow**: Test in Dev → Staging → Production
-6. **Compliance**: Patch Manager reporting + Config Rules for compliance
-7. **Rollback**: AMI backups before patching, quick rollback via ASG replacement
-
-**Q16: What is Spot Instance interruption handling?**
-**A:** Spot instances can be interrupted with 2-minute warning. Strategies:
-- **Spot Fleet**: Diversified instance types across pools
-- **Checkpointing**: Save state to S3/EBS regularly
-- **Interruption Handlers**: Lambda triggered by CloudWatch Events (EC2 Spot Instance Interruption Warning) to gracefully drain connections
-- **Mixed Instances Policy**: ASG with On-Demand base + Spot capacity
-
-**Q17: Difference between EC2 Hibernate vs Stop vs Terminate?**
-**A:**
-- **Terminate**: Delete everything (configurable EBS delete)
-- **Stop**: OS shutdown, resources released, EBS persists, RAM lost
-- **Hibernate**: OS suspended to disk (root EBS), RAM saved to EBS, faster boot (application state preserved), instance RAM must be < EBS size
-
-**Q18: How do you achieve PCI-DSS compliance on EC2?**
-**A:**
-- Isolate in dedicated VPC with strict NACLs/SGs
-- Encryption at rest (EBS) and in transit (TLS)
-- No hardcoded credentials (IAM Roles + Secrets Manager)
-- Logging: CloudTrail, VPC Flow Logs, OS logs → S3 with Object Lock
-- Regular vulnerability scans (Amazon Inspector)
-- Patch compliance (Systems Manager)
-- Dedicated instances or Dedicated Hosts (if required)
-- Access logging and MFA enforcement
-
-**Q19: Explain EC2 Instance Connect vs SSH Key Pairs.**
-**A:** EC2 Instance Connect provides browser-based SSH without managing .pem files. It:
-- Uses temporary SSH keys pushed to instance metadata (valid 60 seconds)
-- Integrates with IAM (user authentication via IAM policies)
-- No need to open port 22 to internet (can use VPC endpoints)
-- Audit trail in CloudTrail
-- Supports tunneling for RDP
-Traditional Key Pairs require file management and long-term key security.
-
-**Q20: How would you reduce EC2 costs by 60% without impacting performance?**
-**A:**
-1. **Compute Savings Plans**: 1-3 year commitment (up to 66% savings)
-2. **Spot Instances**: For CI/CD, batch processing (90% savings)
-3. **Right Sizing**: Use AWS Compute Optimizer recommendations
-4. **Graviton2/3 (ARM)**: 20% better price/performance vs x86
-5. **EBS gp3**: 20% cheaper than gp2, better performance
-6. **Stop Dev/Test**: Automated schedules (Lambda to stop/start)
-7. **Reserved Capacity**: For baseline steady-state workloads
-
----
-
-## 🎓 Final Tips for Interviews
-
-1. **Know the Well-Architected Framework**: Always mention operational excellence, security, reliability, performance efficiency, cost optimization, and sustainability.
-
-2. **Hybrid Cloud**: Be ready to discuss Direct Connect, VPN, and hybrid architectures.
-
-3. **Serverless Comparison**: Know when to use EC2 vs ECS/EKS (containers) vs Lambda.
-
-4. **Real Numbers**: Know rough performance metrics (EBS gp3 baseline 3000 IOPS, t3.micro baseline 10% CPU, etc.)
-
-5. **Troubleshooting**: Always mention CloudWatch Logs and Systems Manager as first steps.
+**🎯 Use Cases:** Web hosting, databases, batch processing, ML training, dev/test environments
 
 ---
 
