@@ -1,296 +1,272 @@
-# Day 3 - AWS EC2 Complete Guide & Interview Preparation 🚀
+# 🌐 VPC & Networking Explained
 
-> Your comprehensive handbook for Amazon Elastic Compute Cloud (EC2) - from basics to cracking DevOps interviews! 🎯
-
----
-
-## 📑 Table of Contents
-1. [What is EC2?](#-what-is-ec2)
-2. [Core Components](#-core-components)
-3. [Instance Types Deep Dive](#-instance-types-)
-4. [Storage Options](#-storage-options-)
-5. [Networking Basics](#-networking-basics-)
-6. [Security & Access](#-security--access-)
-7. [Step-by-Step Launch Guide](#-step-by-step-launch-guide-)
-8. [Best Practices](#-best-practices-)
-9. [Interview Questions & Answers](#-interview-questions--answers-)
-10. [Quick Reference Commands](#-quick-reference-commands-)
+> **Author:** SalvatoreOps &nbsp;|&nbsp; **Date:** March 15, 2026 &nbsp;|&nbsp; **License:** MIT
 
 ---
 
-## 🎯 What is EC2?
+## 📖 What is a VPC?
 
-**Amazon Elastic Compute Cloud (EC2)** is a web service that provides resizable compute capacity in the cloud. It allows you to:
-- 🖥️ Run virtual servers (instances) on-demand
-- ⚡ Scale capacity up or down automatically
-- 💰 Pay only for what you use (per second billing)
-- 🌍 Deploy globally across multiple regions
+A **Virtual Private Cloud (VPC)** is a logically isolated section of a cloud provider's network where you can launch resources in a virtual network you define. Think of it as your own private data center — but in the cloud.
 
-**Key Benefits:**
-- Elasticity: Scale resources automatically 📈
-- Control: Root access to your servers 🎮
-- Flexible: Choose from multiple OS and software configurations 🧩
-- Integrated: Works with S3, RDS, VPC, Lambda, etc. 🔗
-
----
-
-## 🧩 Core Components
-
-### 1. Amazon Machine Image (AMI) 🖼️
-- Template containing OS, application server, and applications
-- Types: AWS provided, Marketplace, Community, Custom (your own)
-
-### 2. Instance Types 💪
-Categorized by use case:
-- **T-series**: Burstable performance (dev/test)
-- **M-series**: General purpose (balanced)
-- **C-series**: Compute optimized (CPU intensive)
-- **R-series**: Memory optimized (databases)
-- **G-series**: GPU instances (ML, graphics)
-- **I-series**: Storage optimized (NoSQL, data warehouses)
-
-### 3. Key Pairs 🔐
-- Public-key cryptography for secure login
-- `.pem` (Linux) or `.ppk` (Windows) files
-- **NEVER share your private key!** ⚠️
-
-### 4. Security Groups 🛡️
-- Virtual firewalls at instance level
-- Stateful: Return traffic automatically allowed
-- Rules: Inbound (ingress) and Outbound (egress)
-- Default: Deny all inbound, allow all outbound
-
-### 5. Elastic IP (EIP) 📍
-- Static IPv4 address for dynamic cloud computing
-- Remains associated with your account until released
-- 💸 **Caution**: Charges apply when not in use
-
----
-
-## 💻 Instance Types Explained
-
-| Family | Use Case | Examples |
-|--------|----------|----------|
-| **T2/T3/T3a/T4g** | Low cost, burst | t3.micro (Free tier eligible) |
-| **M5/M6g** | General purpose | Web servers, small DBs |
-| **C5/C6g** | Compute intensive | Batch processing, gaming |
-| **R5/R6g** | Memory intensive | SAP, Oracle, in-memory caches |
-| **I3/I3en** | Storage optimized | NoSQL, data warehousing |
-| **G4/P3** | GPU accelerated | ML, video encoding |
-
-**Naming Convention**: `[Family][Generation][Size][Attributes]`
-Example: `m5.xlarge` = General purpose, 5th gen, extra large
-
----
-
-## 💾 Storage Options
-
-### 1. EBS (Elastic Block Store) 💿
-- Persistent block storage
-- **Types:**
-  - **gp3**: General purpose SSD (default) ⚡
-  - **io2/io1**: Provisioned IOPS SSD (databases)
-  - **st1**: Throughput optimized HDD (big data)
-  - **sc1**: Cold HDD (archival)
-- Can detach and attach to different instances
-- Snapshot backup to S3 📸
-
-### 2. Instance Store (Ephemeral) 💨
-- Physical storage attached to host
-- **Lost when stopped** ⚠️
-- High I/O performance
-- Good for temp files, cache
-
-### 3. EFS (Elastic File System) 📁
-- Managed NFS service
-- Shared across multiple AZs and instances
-- Auto-scaling storage
-
----
-
-## 🌐 Networking Basics
-
-### VPC (Virtual Private Cloud) 🏠
-- Isolated network environment
-- CIDR block range (e.g., 10.0.0.0/16)
-
-### Subnets 🕸️
-- **Public**: Has route to Internet Gateway (IGW)
-- **Private**: No direct internet access (NAT Gateway instead)
-- **Placement**: Different AZs for HA
-
-### IP Addressing 🏷️
-- **Private IP**: Internal communication only
-- **Public IP**: Internet accessible (changes on stop/start)
-- **Elastic IP**: Static public IP (persistent)
-
----
-
-## 🔒 Security & Access
-
-### IAM Roles vs Key Pairs
-- **IAM Roles**: Preferred for EC2 → AWS service access (no credentials stored)
-- **Key Pairs**: For SSH/RDP access to OS
-
-### Security Group Best Practices:
-✅ Principle of least privilege  
-✅ Restrict SSH (port 22) to your IP only  
-✅ Use separate SGs for different tiers  
-❌ Never use 0.0.0.0/0 for sensitive ports  
-
-### User Data Scripts 📝
-- Bootstrap scripts run at first launch
-- Automate installations and configurations
-
----
-
-## 🛠️ Step-by-Step Launch Guide
-
-### Step 1: Sign in to AWS Console 🚪
-Navigate to [AWS Management Console](https://console.aws.amazon.com) and login
-
-### Step 2: Navigate to EC2 Dashboard 🖱️
-- Services → Compute → EC2
-- OR Search "EC2" in top bar
-
-### Step 3: Launch Instance 🚀
-Click **"Launch Instance"** button
-
-### Step 4: Choose AMI 🎨
-1. Select **Quick Start** (for beginners)
-2. Choose **Amazon Linux 2** or **Ubuntu Server 22.04 LTS** (Free tier eligible)
-3. Architecture: 64-bit (x86)
-
-### Step 5: Choose Instance Type 💪
-- Select **t2.micro** (Free tier eligible) ✅
-- Or t3.micro for better performance
-
-### Step 6: Configure Key Pair 🔑
-1. Select **"Create new key pair"** (if first time)
-2. Name: `my-ec2-key`
-3. Type: RSA
-4. Format: `.pem` (Linux/Mac) or `.ppk` (Windows)
-5. **Download and save securely!** 📥
-
-### Step 7: Network Settings 🌐
-- **VPC**: Default VPC (or your custom VPC)
-- **Subnet**: Any available (preferably with public IP auto-assign)
-- **Auto-assign Public IP**: Enable ✅
-- **Firewall**: Create security group
-  - Name: `allow-ssh-http`
-  - Description: "SSH and HTTP access"
-  
-**Inbound Rules:**
-- Type: SSH, Port: 22, Source: My IP (dropdown) 🛡️
-- Type: HTTP, Port: 80, Source: Anywhere (0.0.0.0/0)
-
-### Step 8: Configure Storage 💾
-- **Size**: 8-30 GB (Free tier: up to 30GB)
-- **Type**: gp3 (general purpose SSD)
-- **Delete on Termination**: ✅ (for dev/test)
-
-### Step 9: Advanced Details (Optional) ⚙️
-Scroll to **User data** and paste:
-```bash
-#!/bin/bash
-yum update -y
-yum install -y httpd
-systemctl start httpd
-systemctl enable httpd
-echo "<h1>Hello from EC2! 🚀</h1>" > /var/www/html/index.html
+```
+┌─────────────────────────────────────────────────────────┐
+│                     CLOUD PROVIDER                      │
+│                                                         │
+│   ┌─────────────────────────────────────────────────┐   │
+│   │               YOUR VPC (10.0.0.0/16)           │   │
+│   │                                                 │   │
+│   │  ┌──────────────────┐  ┌──────────────────┐    │   │
+│   │  │  PUBLIC SUBNET   │  │  PRIVATE SUBNET  │    │   │
+│   │  │  (10.0.1.0/24)   │  │  (10.0.2.0/24)   │    │   │
+│   │  │                  │  │                  │    │   │
+│   │  │  🖥️  Web Server  │  │  🗄️  Database    │    │   │
+│   │  │  🌐  Load Balancer│  │  🔒  App Server  │    │   │
+│   │  └────────┬─────────┘  └──────────────────┘    │   │
+│   │           │  NAT Gateway                        │   │
+│   └───────────┼─────────────────────────────────────┘   │
+│               │ Internet Gateway                         │
+└───────────────┼─────────────────────────────────────────┘
+                │
+              🌍 Internet
 ```
 
-### Step 10: Launch! 🎉
-- Click **"Launch Instance"**
-- View Instances → Wait for "Instance State: Running" ✅
-- Note the **Public IPv4 address**
+---
 
-### Step 11: Connect to Instance 🔌
+## 🗂️ Core Networking Concepts
 
-**Via SSH (Linux/Mac):**
-```bash
-chmod 400 my-ec2-key.pem
-ssh -i my-ec2-key.pem ec2-user@<public-ip>
-# For Ubuntu: ssh -i key.pem ubuntu@<public-ip>
+### 1. CIDR Blocks
+
+**CIDR (Classless Inter-Domain Routing)** defines IP address ranges.
+
+| CIDR Notation   | Range                        | # of IPs |
+|-----------------|------------------------------|-----------|
+| `10.0.0.0/8`    | 10.0.0.0 – 10.255.255.255    | 16M       |
+| `10.0.0.0/16`   | 10.0.0.0 – 10.0.255.255      | 65,536    |
+| `10.0.1.0/24`   | 10.0.1.0 – 10.0.1.255        | 256       |
+| `10.0.1.0/28`   | 10.0.1.0 – 10.0.1.15         | 16        |
+
+> 💡 **Rule of thumb:** The higher the prefix number (e.g. `/28`), the smaller the network.
+
+---
+
+### 2. Subnets
+
+Subnets divide your VPC into smaller, manageable segments.
+
+```
+VPC: 10.0.0.0/16
+│
+├── 🌐 Public Subnet  (10.0.1.0/24)   → Has route to Internet Gateway
+│       └── Resources here CAN reach the internet
+│
+└── 🔒 Private Subnet (10.0.2.0/24)   → No direct internet route
+        └── Resources here are ISOLATED from direct internet access
 ```
 
-**Via Windows (PuTTY):**
-1. Convert .pem to .ppk using PuTTYgen
-2. PuTTY → Host: ec2-user@<public-ip>
-3. Connection → SSH → Auth → Browse for .ppk file
-4. Open
+---
 
-### Step 13: Clean Up 🧹
-- **IMPORTANT**: Stop/Terminate when done to avoid charges!
-- Actions → Instance State → Terminate
+### 3. Internet Gateway vs NAT Gateway
 
-### 🎯 Complete EC2 Launch Playlist
-**📺 [AWS Tutorial: Launch Your First EC2 Instance (Official)](https://www.youtube.com/watch?v=Z3SYDTMP3d4)**  
-*Duration: 15 mins | Level: Beginner*  
-Step-by-step visual guide from AWS engineers covering the entire launch process, security groups, and key pairs.
+```
+                          INTERNET
+                             │
+                    ┌────────┴────────┐
+                    │  Internet       │
+                    │  Gateway (IGW)  │   ← Two-way traffic
+                    └────────┬────────┘
+                             │
+             ┌───────────────┼──────────────┐
+             │               │              │
+    ┌────────┴──────┐   ┌────┴────────┐     │
+    │ PUBLIC SUBNET │   │ NAT GATEWAY │     │
+    │               │   │             │     │
+    │  🌐 Web Server│   └────┬────────┘     │
+    └───────────────┘        │              │
+                    ┌────────┴──────┐       │
+                    │ PRIVATE SUBNET│       │
+                    │               │       │
+                    │  🗄️  Database │       │
+                    │  (outbound    │       │
+                    │   only via    │       │
+                    │   NAT)        │       │
+                    └───────────────┘       │
+```
+
+| Gateway        | Direction     | Use Case                        |
+|----------------|---------------|---------------------------------|
+| Internet GW    | Inbound + Outbound | Public-facing resources    |
+| NAT Gateway    | Outbound only | Private resources needing updates |
 
 ---
 
-## ⭐ Best Practices
+### 4. Security Groups vs NACLs
 
-### Cost Optimization 💰
-- Use **Reserved Instances** or **Savings Plans** for predictable workloads
-- Enable **Auto Scaling** to match demand
-- Use **Spot Instances** for fault-tolerant workloads (up to 90% savings)
-- Regularly review and delete unused EBS volumes
+```
+ INCOMING REQUEST
+        │
+        ▼
+┌───────────────────┐
+│      NACL         │  ← Network ACL (Subnet-level, stateless)
+│  Subnet Boundary  │     Checks BOTH inbound & outbound rules
+└───────┬───────────┘
+        │
+        ▼
+┌───────────────────┐
+│  Security Group   │  ← Instance-level, stateful
+│  (EC2 / Resource) │     If inbound allowed → return traffic auto-allowed
+└───────────────────┘
+```
 
-### Security Hardening 🛡️
-- Enable **CloudTrail** for audit logging
-- Use **Systems Manager Session Manager** instead of direct SSH (no open port 22)
-- Regularly patch OS using **Patch Manager**
-- Encrypt EBS volumes using KMS keys
-
-### High Availability 🏗️
-- Deploy across **Multiple Availability Zones**
-- Use **Elastic Load Balancer (ELB)** with EC2
-- Configure **Auto Scaling Groups (ASG)**
-- Create **Golden AMIs** for quick recovery
-
-### Monitoring 📊
-- Enable **CloudWatch** detailed monitoring for production
-- Set up **CloudWatch Alarms** for CPU/disk
-- Install **CloudWatch Agent** for memory metrics
-- Use **AWS Systems Manager** for inventory and patching
-
----
-
-## Summary
-
-**What:** Virtual servers (VMs) in AWS cloud - scalable, on-demand compute.
-
-**🔑 Key Components:**
-- **AMI**: OS template (Linux/Windows)
-- **Instance Types**: T/M (general), C (compute), R (memory), G (GPU)
-- **Storage**: EBS (persistent) vs Instance Store (temporary)
-- **Security Groups**: Firewall rules (ports 22/80/443)
-- **Key Pairs**: SSH access credentials
-
-**🚀 Launch in 5 Steps:**
-1. Select AMI + Instance Type (t2.micro for free tier)
-2. Configure network (VPC, public IP, Security Groups)
-3. Add storage (8-30GB gp3)
-4. Select/create Key Pair (.pem file)
-5. Launch & Connect via SSH/RDP
-
-**💰 Pricing:** On-Demand (pay hourly), Reserved (1-3yr savings ~72%), Spot (90% off, interruptible)
-
-**⚡ Pro Tips:**
-- Use Security Groups wisely (restrict SSH to your IP)
-- Stop instances when idle to save money
-- Create AMIs/snapshots for backups
-- Use IAM roles, never hardcode credentials
-
-**🎯 Use Cases:** Web hosting, databases, batch processing, ML training, dev/test environments
+| Feature         | Security Group   | Network ACL        |
+|-----------------|------------------|--------------------|
+| Level           | Instance         | Subnet             |
+| Stateful?       | ✅ Yes           | ❌ No (stateless)  |
+| Allow/Deny?     | Allow only       | Allow & Deny       |
+| Rule evaluation | All rules        | In order (numbered)|
 
 ---
 
-*Last Updated: 2024*  
-*Author: SalvatoreOps*  
-*License: Public Domain / Free to share*
+### 5. Route Tables
+
+Every subnet has a **route table** that defines where network traffic goes.
+
+```
+Route Table (Public Subnet)
+┌──────────────────┬─────────────────┐
+│   Destination    │     Target      │
+├──────────────────┼─────────────────┤
+│  10.0.0.0/16     │  local          │  ← VPC-internal traffic
+│  0.0.0.0/0       │  igw-xxxxxxxx   │  ← All other traffic → Internet
+└──────────────────┴─────────────────┘
+
+Route Table (Private Subnet)
+┌──────────────────┬─────────────────┐
+│   Destination    │     Target      │
+├──────────────────┼─────────────────┤
+│  10.0.0.0/16     │  local          │  ← VPC-internal traffic
+│  0.0.0.0/0       │  nat-xxxxxxxx   │  ← All other traffic → NAT
+└──────────────────┴─────────────────┘
+```
 
 ---
+
+## 🏗️ Full Architecture Diagram
+
+```
+                          🌍 INTERNET
+                               │
+                    ┌──────────┴──────────┐
+                    │   Internet Gateway  │
+                    └──────────┬──────────┘
+                               │
+        ┌──────────────────────┼──────────────────────┐
+        │          VPC: 10.0.0.0/16                    │
+        │                      │                       │
+        │   ┌─── AZ-1 ──────────────── AZ-2 ───────┐  │
+        │   │                  │                    │  │
+        │   │  ┌─────────────────────────────────┐  │  │
+        │   │  │         PUBLIC SUBNETS          │  │  │
+        │   │  │  10.0.1.0/24   │  10.0.3.0/24  │  │  │
+        │   │  │  [Load Balancer] [Load Balancer]│  │  │
+        │   │  │  [NAT Gateway]                  │  │  │
+        │   │  └────────────┬────────────────────┘  │  │
+        │   │               │                       │  │
+        │   │  ┌─────────────────────────────────┐  │  │
+        │   │  │        PRIVATE SUBNETS          │  │  │
+        │   │  │  10.0.2.0/24   │  10.0.4.0/24  │  │  │
+        │   │  │  [App Server]    [App Server]   │  │  │
+        │   │  └────────────┬────────────────────┘  │  │
+        │   │               │                       │  │
+        │   │  ┌─────────────────────────────────┐  │  │
+        │   │  │        DATABASE SUBNETS         │  │  │
+        │   │  │  10.0.5.0/24   │  10.0.6.0/24  │  │  │
+        │   │  │  [Primary DB]    [Replica DB]   │  │  │
+        │   │  └─────────────────────────────────┘  │  │
+        │   └────────────────────────────────────────┘  │
+        └──────────────────────────────────────────────┘
+```
+
+---
+
+## 🔗 VPC Peering & Connectivity Options
+
+```
+VPC-A (10.0.0.0/16)    VPC-B (172.16.0.0/16)
+        │                        │
+        └──── VPC Peering ───────┘   ← Private, no overlapping CIDR
+
+        ┌─────────────────────────────────────────┐
+        │              Transit Gateway            │
+        │   (Hub-and-Spoke for multiple VPCs)     │
+        └──┬──────────┬──────────┬───────────────┘
+           │          │          │
+         VPC-A      VPC-B      On-Premises
+                               (via VPN / Direct Connect)
+```
+
+---
+
+## ✅ Summary
+
+| Concept          | What it Does                                      |
+|------------------|---------------------------------------------------|
+| **VPC**          | Isolated virtual network in the cloud             |
+| **Subnet**       | Subdivides VPC into public/private segments       |
+| **CIDR**         | Defines IP address ranges                         |
+| **IGW**          | Allows public internet access (bidirectional)     |
+| **NAT Gateway**  | Allows private resources to reach internet (outbound only) |
+| **Security Group**| Stateful firewall at the instance level          |
+| **NACL**         | Stateless firewall at the subnet level            |
+| **Route Table**  | Controls where traffic is directed                |
+| **VPC Peering**  | Private connection between two VPCs               |
+| **Transit GW**   | Central hub connecting multiple VPCs & on-prem   |
+
+---
+
+## 📚 Free Resources
+
+### 📘 Official Docs
+- [AWS VPC Documentation](https://docs.aws.amazon.com/vpc/latest/userguide/)
+- [Azure Virtual Network Docs](https://learn.microsoft.com/en-us/azure/virtual-network/)
+- [GCP VPC Documentation](https://cloud.google.com/vpc/docs)
+
+### 🎓 Free Learning Platforms
+- [AWS Skill Builder (Free Tier)](https://skillbuilder.aws/) — Official AWS free training
+- [Google Cloud Skills Boost](https://cloudskillsboost.google/) — Free labs & courses
+- [freeCodeCamp – Networking Fundamentals](https://www.freecodecamp.org/)
+- [Professor Messer – CompTIA Net+](https://www.professormesser.com/network-plus/n10-008/n10-008-video/n10-008-training-course/) — Free video course
+
+### 📺 YouTube Channels
+- **NetworkChuck** — Fun, beginner-friendly networking videos
+- **TechWorld with Nana** — Cloud and DevOps concepts
+- **Fireship** — Short, sharp tech explainers
+
+### 🛠️ Hands-On Practice
+- [AWS Free Tier](https://aws.amazon.com/free/) — Build a real VPC for free
+- [Cisco Packet Tracer](https://www.netacad.com/courses/packet-tracer) — Network simulation tool
+- [Katacoda / O'Reilly Scenarios](https://learning.oreilly.com/) — Interactive labs
+
+---
+
+## 📄 License
+
+```
+MIT License
+
+Copyright (c) 2026 SalvatoreOps
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this README and associated documentation files, to deal in the content
+without restriction, including without limitation the rights to use, copy,
+modify, merge, publish, distribute, sublicense, and/or sell copies.
+```
+
+---
+
+<div align="center">
+
+Made with ❤️ by **SalvatoreOps** &nbsp;|&nbsp; March 15, 2026
+
+*"The network is the computer." — Sun Microsystems*
+
+</div>
