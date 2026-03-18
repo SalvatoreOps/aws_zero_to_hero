@@ -1,7 +1,7 @@
 # ⚖️ AWS ELB & Auto Scaling — A Visual Guide
 
 > **Author:** SalvatoreOps
-> **Date:** March 15, 2026
+> **Date:** March 15, 2026.
 > **License:** MIT
 
 ---
