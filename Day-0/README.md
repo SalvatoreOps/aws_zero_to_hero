@@ -356,10 +356,14 @@ AWS uses a **pay-as-you-go** model. No upfront costs, no contracts (unless you c
 **✍️ Author:** SalvatoreOps
 **📄 License:** MIT License
 
+<div align="center">
+  
 ```
 MIT License — Free to use, share, and modify with attribution.
 Copyright © 2026 SalvatoreOps
 ```
+
+</div>
 
 *Made with ❤️ for the cloud community*
 
