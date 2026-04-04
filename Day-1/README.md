@@ -273,14 +273,18 @@ THE MATERIAL IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
 
 ---
 
-**📅 Date:** April 04, 2026
+**📅 Date:** March 15, 2026
 **✍️ Author:** SalvatoreOps
 **📄 License:** MIT License
 
+<div align="center">
+  
 ```
 MIT License — Free to use, share, and modify with attribution.
 Copyright © 2026 SalvatoreOps
 ```
+
+</div>
 
 *Made with ❤️ for the cloud community*
 
