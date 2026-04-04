@@ -271,8 +271,19 @@ THE MATERIAL IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
 
 <div align="center">
 
-**Made with ❤️ by SalvatoreOps · March 15, 2026**
+---
 
-*"Security is not a product, but a process." — Bruce Schneier*
+**📅 Date:** April 04, 2026
+**✍️ Author:** SalvatoreOps
+**📄 License:** MIT License
+
+```
+MIT License — Free to use, share, and modify with attribution.
+Copyright © 2026 SalvatoreOps
+```
+
+*Made with ❤️ for the cloud community*
+
+---
 
 </div>
